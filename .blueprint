@@ -1,0 +1,43 @@
+created:
+    - database/factories/KecamatanFactory.php
+    - database/factories/DesaFactory.php
+    - database/factories/CalonFactory.php
+    - database/factories/TpsFactory.php
+    - database/factories/JabatantimFactory.php
+    - database/factories/TimFactory.php
+    - database/factories/PemilihFactory.php
+    - database/factories/PresenpemilihFactory.php
+    - database/factories/SuaraFactory.php
+    - database/factories/SaksiFactory.php
+    - database/migrations/2024_10_08_141253_create_kecamatans_table.php
+    - database/migrations/2024_10_08_141254_create_desas_table.php
+    - database/migrations/2024_10_08_141255_create_calons_table.php
+    - database/migrations/2024_10_08_141256_create_tps_table.php
+    - database/migrations/2024_10_08_141257_create_jabatantims_table.php
+    - database/migrations/2024_10_08_141258_create_tims_table.php
+    - database/migrations/2024_10_08_141259_create_pemilihs_table.php
+    - database/migrations/2024_10_08_141300_create_presenpemilihs_table.php
+    - database/migrations/2024_10_08_141301_create_suaras_table.php
+    - database/migrations/2024_10_08_141302_create_saksis_table.php
+    - app/Models/Kecamatan.php
+    - app/Models/Desa.php
+    - app/Models/Calon.php
+    - app/Models/Tps.php
+    - app/Models/Jabatantim.php
+    - app/Models/Tim.php
+    - app/Models/Pemilih.php
+    - app/Models/Presenpemilih.php
+    - app/Models/Suara.php
+    - app/Models/Saksi.php
+models:
+    User: { name: string, email: string, email_verified_at: 'timestamp nullable', password: string, remember_token: 'string:100 nullable' }
+    Kecamatan: { nama_kecamatan: string, relationships: { hasMany: 'Desa, Tps, Tim, Pemilih' } }
+    Desa: { nama_desa: string, kecamatan_id: foreign, relationships: { hasMany: 'Tps, Tim, Pemilih, Saksi', belongsTo: Kecamatan } }
+    Calon: { nama_calon_bupati: string, nama_calon_wakil_bupati: string, nomor_urut: integer, foto: string }
+    Tps: { nama_tps: string, kecamatan_id: foreign, desa_id: foreign, alamat: string, latitude: 'nullable float', longitude: 'nullable float', relationships: { hasMany: 'Suara, Pemilih, Saksi', belongsTo: 'Desa, Kecamatan' } }
+    Jabatantim: { nama_jabatan: string, relationships: { hasMany: Tim } }
+    Tim: { nama: string, email: string, jabatan_id: foreign, kecamatan_id: foreign, desa_id: 'nullable integer', relationships: { hasMany: 'Pemilih, Saksi', belongsTo: 'Kecamatan, Desa, Jabatantim' } }
+    Pemilih: { nama_pemilih: string, nik: string, tempat_lahir: string, tanggal_lahir: date, jk: string, alamat: string, agama: string, pekerjaan: string, suku: string, no_hp: string, status: 'enum:verified,unverified', kecamatan_id: foreign, desa_id: foreign, tps_id: 'nullable integer', tim_id: foreign, relationships: { belongsTo: 'Kecamatan, Desa, Tps, Tim' } }
+    Presenpemilih: { pemilih_id: foreign, tps_id: foreign, saksi_id: foreign, status: 'enum:hadir,tidak_hadir', relationships: { belongsTo: 'Pemilih, Tps, Saksi' } }
+    Suara: { calon_id: foreign, tps_id: foreign, jumlah_suara: integer, saksi_id: foreign, relationships: { belongsTo: 'Calon, Tps, Saksi' } }
+    Saksi: { nama_saksi: string, no_hp: string, email: string, foto: string, status: 'enum:verified,unverified', kecamatan_id: foreign, desa_id: foreign, tps_id: foreign, tim_id: foreign, relationships: { belongsTo: 'Kecamatan, Desa, Tps, Tim', hasMany: 'Suara, Presenpemilih' } }

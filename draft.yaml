@@ -1,0 +1,93 @@
+models:
+  Kecamatan:
+    nama_kecamatan: string
+    relationships:
+      hasMany: Desa, Tps, Tim, Pemilih
+
+  Desa:
+    nama_desa: string
+    kecamatan_id: foreign
+    relationships:
+      hasMany: Tps, Tim, Pemilih, Saksi
+      belongsTo: Kecamatan
+
+  Calon:
+    nama_calon_bupati: string
+    nama_calon_wakil_bupati: string
+    nomor_urut: integer
+    foto: string
+
+  Tps:
+    nama_tps: string
+    kecamatan_id: foreign
+    desa_id: foreign
+    alamat: string
+    latitude: nullable float
+    longitude: nullable float
+    relationships:
+      hasMany: Suara, Pemilih, Saksi
+      belongsTo: Desa, Kecamatan
+
+  Jabatantim:
+    nama_jabatan: string
+    relationships:
+      hasMany: Tim
+
+  Tim:
+    nama: string
+    email: string
+    jabatan_id: foreign
+    kecamatan_id: foreign
+    desa_id: nullable integer
+    relationships:
+      hasMany: Pemilih, Saksi
+      belongsTo: Kecamatan, Desa, Jabatantim
+
+  Pemilih:
+    nama_pemilih: string
+    nik: string
+    tempat_lahir: string
+    tanggal_lahir: date
+    jk: string
+    alamat: string
+    agama: string
+    pekerjaan: string
+    suku: string
+    no_hp: string
+    status: enum:verified,unverified
+    kecamatan_id: foreign
+    desa_id: foreign
+    tps_id: nullable integer
+    tim_id: foreign
+    relationships:
+      belongsTo: Kecamatan, Desa, Tps, Tim
+
+  Presenpemilih:
+    pemilih_id: foreign
+    tps_id: foreign
+    saksi_id: foreign
+    status: enum:hadir,tidak_hadir
+    relationships:
+      belongsTo: Pemilih, Tps, Saksi
+
+  Suara:
+    calon_id: foreign
+    tps_id: foreign
+    jumlah_suara: integer
+    saksi_id: foreign
+    relationships:
+      belongsTo: Calon, Tps, Saksi
+
+  Saksi:
+    nama_saksi: string
+    no_hp: string
+    email: string
+    foto: string
+    status: enum:verified,unverified
+    kecamatan_id: foreign
+    desa_id: foreign
+    tps_id: foreign
+    tim_id: foreign
+    relationships:
+      belongsTo: Kecamatan, Desa, Tps, Tim
+      hasMany: Suara, Presenpemilih
